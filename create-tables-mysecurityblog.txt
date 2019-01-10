@@ -1,0 +1,76 @@
+CREATE  TABLE IF NOT EXISTS `mysecurityblog`.`articles` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `caption` VARCHAR(45) NOT NULL COMMENT 'Заголовок статьи' ,
+  `text` TEXT NOT NULL COMMENT 'Текст статьи' ,
+  `date` TIMESTAMP NOT NULL DEFAULT now() COMMENT 'Дата добавления статьи.' ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `caption_UNIQUE` (`caption` ASC) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+CREATE  TABLE IF NOT EXISTS `mysecurityblog`.`users` (
+  `login` VARCHAR(15) NOT NULL COMMENT 'Логин' ,
+  `password` VARCHAR(64) NOT NULL COMMENT 'Пароль' ,
+  PRIMARY KEY (`login`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+CREATE  TABLE IF NOT EXISTS `mysecurityblog`.`groupuser` (
+  `name` VARCHAR(20) NOT NULL COMMENT 'Наименование группы' ,
+  `users_login` VARCHAR(15) NOT NULL COMMENT 'Вторичный ключ от таблицы users' ,
+  PRIMARY KEY (`name`) ,
+  INDEX `fk_groupuser_users` (`users_login` ASC) ,
+  CONSTRAINT `fk_groupuser_users`
+    FOREIGN KEY (`users_login` )
+    REFERENCES `mysecurityblog`.`users` (`login` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+CREATE  TABLE IF NOT EXISTS `mysecurityblog`.`comments` (
+  `id` INT NOT NULL ,
+  `text` VARCHAR(255) NOT NULL COMMENT 'Текст коментария' ,
+  `date` TIMESTAMP NOT NULL DEFAULT now() COMMENT 'Дата коментария' ,
+  `users_login` VARCHAR(15) NOT NULL COMMENT 'Юзер пославший коментарий' ,
+  `articles_id` INT NOT NULL COMMENT 'Статья, которой послан коментарий' ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_comments_users` (`users_login` ASC) ,
+  INDEX `fk_comments_articles` (`articles_id` ASC) ,
+  CONSTRAINT `fk_comments_users`
+    FOREIGN KEY (`users_login` )
+    REFERENCES `mysecurityblog`.`users` (`login` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_comments_articles`
+    FOREIGN KEY (`articles_id` )
+    REFERENCES `mysecurityblog`.`articles` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+CREATE  TABLE IF NOT EXISTS `mysecurityblog`.`groupuser_has_articles` (
+  `groupuser_name` VARCHAR(20) NOT NULL ,
+  `articles_id` INT NOT NULL ,
+  PRIMARY KEY (`groupuser_name`, `articles_id`) ,
+  INDEX `fk_groupuser_has_articles_articles` (`articles_id` ASC) ,
+  INDEX `fk_groupuser_has_articles_groupuser` (`groupuser_name` ASC) ,
+  CONSTRAINT `fk_groupuser_has_articles_groupuser`
+    FOREIGN KEY (`groupuser_name` )
+    REFERENCES `mysecurityblog`.`groupuser` (`name` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_groupuser_has_articles_articles`
+    FOREIGN KEY (`articles_id` )
+    REFERENCES `mysecurityblog`.`articles` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
