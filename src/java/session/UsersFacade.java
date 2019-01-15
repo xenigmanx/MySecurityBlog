@@ -8,6 +8,7 @@ package session;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.xml.registry.infomodel.User;
 import servlets.Users;
 
 /**
@@ -28,5 +29,14 @@ public class UsersFacade extends AbstractFacade<Users> {
     public UsersFacade() {
         super(Users.class);
     }
-    
+    private User findBuyLogin(String username) {
+        try {
+            return (User) em.createQuery("SELECT u FROM User u.login = :username")
+                    .setParameter("username", username)
+                    .getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+        
+    }
 }

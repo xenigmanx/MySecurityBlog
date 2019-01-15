@@ -15,10 +15,10 @@
         <h1>Register!</h1>
         <form action="j_security_check" method="POST">
             Login:<br>
-            <input type="text" name="j_username">
+            <input type="text" name="username">
             <br>
             Password:<br>
-            <input type="password" name="j_password">
+            <input type="password" name="password">
             <br>
             <input type="submit" values="go">
             

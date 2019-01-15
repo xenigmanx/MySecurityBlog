@@ -5,9 +5,9 @@
             30
         </session-timeout>
     </session-config>
-    <security-constraint>
-        <display-name>Constraint1</display-name>
-    </security-constraint>
+    <welcome-file-list>
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>JDBCRealm</realm-name>
